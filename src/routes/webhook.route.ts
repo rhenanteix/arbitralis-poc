@@ -1,20 +1,35 @@
 import { FastifyInstance } from "fastify";
 import { queue } from "../queue/inMemoryQueue";
+import { processedMessages } from "../store/idempotency";
 
 export async function webhookRoute(
   app: FastifyInstance
 ) {
-  app.post("/webhook", async (request, reply) => {
-    const payload: any = request.body;
+app.post("/webhook", async (request, reply) => {
 
-    queue.push({
-      payload,
-      retries: 0,
-    });
+  const payload: any = request.body;
 
-    return reply.status(200).send({
-      status: "accepted",
-      messageId: payload.messageId,
+  if (
+    processedMessages.has(
+      payload.messageId
+    )
+  ) {
+    return reply.send({
+      status: "duplicate"
     });
+  }
+
+  processedMessages.add(
+    payload.messageId
+  );
+
+  queue.push({
+    payload,
+    retries: 0
   });
+
+  return reply.send({
+    status: "accepted"
+  });
+});
 }
