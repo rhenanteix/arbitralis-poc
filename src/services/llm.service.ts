@@ -1,17 +1,44 @@
+function sleep(ms: number) {
+  return new Promise(resolve =>
+    setTimeout(resolve, ms)
+  );
+}
+
 export async function processWithLLM(
   message: string
 ): Promise<string> {
 
-  const delay = Math.random() * 5000;
+  const delay =
+    Math.floor(
+      1000 +
+      Math.random() * 4000
+    );
 
-  await new Promise(resolve =>
-    setTimeout(resolve, delay)
+  console.log(
+    `[LLM] Processando (${delay}ms)`
   );
 
-  const fail = Math.random() < 0.3;
+  await sleep(delay);
 
-  if (fail) {
-    throw new Error("LLM timeout");
+  const random =
+    Math.random();
+
+  if (random < 0.15) {
+    throw new Error(
+      "Provider timeout"
+    );
+  }
+
+  if (random < 0.25) {
+    throw new Error(
+      "Rate limit exceeded"
+    );
+  }
+
+  if (random < 0.35) {
+    throw new Error(
+      "Provider unavailable"
+    );
   }
 
   return `Acordo gerado para: ${message}`;

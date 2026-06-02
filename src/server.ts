@@ -5,7 +5,6 @@ import {
 } from "./queue/worker";
 
 const app = buildApp();
-
 startWorker();
 
 app.listen({

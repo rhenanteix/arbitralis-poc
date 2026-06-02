@@ -1,4 +1,5 @@
-import { WebhookPayload } from "../types/webhook";
+import { WebhookPayload }
+from "../types/webhook";
 
 export interface QueueJob {
   payload: WebhookPayload;
