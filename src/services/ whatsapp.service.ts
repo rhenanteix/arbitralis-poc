@@ -3,8 +3,15 @@ export async function sendMessage(
   text: string
 ) {
   console.log(
-    `[OUTBOUND] Mensagem enviada para ${userId}`
+    `[OUTBOUND] POST /mock-whatsapp/send`
   );
 
-  console.log(text);
+  console.log({
+    userId,
+    text
+  });
+
+  return {
+    success: true
+  };
 }

@@ -1,38 +1,24 @@
-import { describe, it, expect }
-from "vitest";
+import { describe, expect, it } from "vitest";
+import { buildApp } from "../app";
 
-import request
-from "supertest";
+describe("Webhook", () => {
+  it("deve aceitar requisição", async () => {
+    const app = buildApp();
 
-import { buildApp }
-from "../app";
+    const response = await app.inject({
+      method: "POST",
+      url: "/webhook",
+      payload: {
+        messageId: "1",
+        userId: "123",
+        message: "teste",
+      },
+    });
 
-describe(
-  "Webhook",
-  () => {
+    expect(response.statusCode).toBe(200);
 
-    it(
-      "deve aceitar requisição",
-      async () => {
+    const body = response.json();
 
-        const app =
-          buildApp();
-
-        const response =
-          await request(
-            app.server
-          )
-          .post("/webhook")
-          .send({
-            messageId: "1",
-            userId: "abc",
-            message: "teste"
-          });
-
-        expect(
-          response.status
-        ).toBe(200);
-      }
-    );
-  }
-);
+    expect(body.status).toBe("accepted");
+  });
+});
